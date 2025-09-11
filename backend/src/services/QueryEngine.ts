@@ -18,11 +18,11 @@ export class QueryEngine {
             if (connection.db_type === "postgresql") {
                 const pool = new Pool({
                     host: connection.host,
-                    port: connection.port,
+                    port: Number(connection.port),
                     user: connection.username,
                     password: connection.password,
                     database: connection.database,
-                    ssl: false,
+                    ssl: { rejectUnauthorized: false },
                 });
 
                 const result = await pool.query(sql, params);
@@ -35,9 +35,11 @@ export class QueryEngine {
                     row_count: result.rowCount ?? 0,
                     execution_time: Date.now() - start,
                 };
+
+                console.log(result.rows)
             }
 
-            if (connection.db_type === "mysql") {
+            /* if (connection.db_type === "mysql") {
                 const conn = await mysql.createConnection({
                     host: connection.host,
                     port: connection.port,
@@ -74,7 +76,7 @@ export class QueryEngine {
                     row_count: rows.length,
                     execution_time: Date.now() - start,
                 };
-            }
+            } */
 
             return {
                 success: false,

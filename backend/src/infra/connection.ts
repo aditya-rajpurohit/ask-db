@@ -1,14 +1,14 @@
 import { Pool, QueryResult, QueryResultRow } from "pg";
+import { ENV } from "../config/env";
 
 const pool = new Pool({
-    host: process.env.APP_DB_HOST || "localhost",
-    port: Number(process.env.APP_DB_PORT) || 5432,
-    user: process.env.APP_DB_USER || "postgres",
-    password: process.env.APP_DB_PASSWORD || "postgres",
-    database: process.env.APP_DB_NAME || "db_ai_assistant",
-    ssl: process.env.APP_DB_SSL === "true" ? { rejectUnauthorized: false } : false,
+    host: ENV.APP_DB_HOST || "localhost",
+    port: ENV.APP_DB_PORT || 5432,
+    user: ENV.APP_DB_USER || "postgres",
+    password: ENV.APP_DB_PASSWORD || "postgres",
+    database: ENV.APP_DB_NAME || "db_ai_assistant",
+    ssl: ENV.APP_DB_SSL ? { rejectUnauthorized: false } : false,
 });
-
 
 export const query = async <T extends QueryResultRow = any>(
     text: string,

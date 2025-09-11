@@ -6,7 +6,6 @@ import Database from "better-sqlite3";
 
 const SECRET_KEY = process.env.APP_SECRET_KEY || "default_secret";
 
-
 export class ConnectionManager {
     /**
      * Save a new DB connection into the app database.

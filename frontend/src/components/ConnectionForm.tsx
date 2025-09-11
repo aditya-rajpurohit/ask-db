@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { testConnection, saveConnection } from "../lib/api";
 
-export default function ConnectionForm({ onSuccess }: { onSuccess: () => void }) {
+export default function ConnectionForm({ onSuccess }: { onSuccess: (connection: any) => void }) {
     const [form, setForm] = useState({
         name: "",
         host: "",
@@ -28,7 +28,7 @@ export default function ConnectionForm({ onSuccess }: { onSuccess: () => void })
     const handleSave = async () => {
         const res = await saveConnection(form);
         if (res.success) {
-            onSuccess();
+            onSuccess(res.data);
         } else {
             setStatus(res.message);
         }

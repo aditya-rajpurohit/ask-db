@@ -2,10 +2,19 @@
 
 import { useState } from "react";
 import { sendMessage } from "../lib/api";
+import DataTable from "./DataTable";
 
 interface Message {
     role: "user" | "assistant";
     content: string;
+    query_result?: {
+        success: boolean;
+        data?: any[];
+        columns?: string[];
+        row_count?: number;
+        execution_time?: number;
+        error?: string;
+    };
 }
 
 export default function ChatBox({ connectionId }: { connectionId: string }) {
@@ -15,18 +24,24 @@ export default function ChatBox({ connectionId }: { connectionId: string }) {
     const handleSend = async () => {
         if (!input) return;
 
-        const newMessage = { role: "user" as const, content: input };
+        // 1. Save user message
+        const newMessage: Message = { role: "user", content: input };
         setMessages((prev) => [...prev, newMessage]);
 
+        // 2. Call backend
         const res = await sendMessage({
             message: input,
             database_connection_id: connectionId,
         });
 
-        setMessages((prev) => [
-            ...prev,
-            { role: "assistant", content: res.message || "Error generating SQL" },
-        ]);
+        // 3. Save assistant message with query_result
+        const assistantMessage: Message = {
+            role: "assistant",
+            content: res.message || "Error generating SQL",
+            query_result: res.query_result,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
         setInput("");
     };
 
@@ -34,14 +49,19 @@ export default function ChatBox({ connectionId }: { connectionId: string }) {
         <div className="flex flex-col h-full bg-white shadow-md rounded-xl">
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((msg, idx) => (
-                    <div
-                        key={idx}
-                        className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm ${msg.role === "user"
-                                ? "bg-black text-white ml-auto"
-                                : "bg-gray-100 text-gray-900 mr-auto"
-                            }`}
-                    >
-                        {msg.content}
+                    <div key={idx} className={`p-3 rounded-lg ${msg.role === "user" ? "bg-gray-200 self-end" : "bg-gray-100 self-start"}`}>
+                        {msg.role === "assistant" && msg.query_result ? (
+                            msg.query_result.error ? (
+                                <p className="text-red-600 text-sm">{msg.query_result.error}</p>
+                            ) : (
+                                <DataTable
+                                    columns={msg.query_result.columns || []}
+                                    data={msg.query_result.data || []}
+                                />
+                            )
+                        ) : (
+                            <p>{msg.content}</p>
+                        )}
                     </div>
                 ))}
             </div>

@@ -3,8 +3,8 @@
 import ConnectionForm from "@/components/ConnectionForm";
 
 export default function DbConnectionPage() {
-    const handleSuccess = () => {
-        localStorage.setItem("connectionId", "your-connection-id");
+    const handleSuccess = (connection: { id: string }) => {
+        localStorage.setItem("connectionId", connection.id);
         window.location.href = "/chat";
     };
 

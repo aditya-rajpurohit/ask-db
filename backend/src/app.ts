@@ -1,11 +1,8 @@
 import cors from "cors";
 import express from "express";
-import dotenv from "dotenv";
 import dbConnectionsRouter from "./routes/dbConnections";
 import chatSessionsRouter from "./routes/chatSessions";
 import { errorHandler } from "./middleware/errorHandler";
-
-dotenv.config();
 
 const app = express();
 

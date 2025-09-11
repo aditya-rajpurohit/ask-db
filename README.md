@@ -1,0 +1,2 @@
+ASK-DB is an AI-powered agentic application designed to streamline how users interact with databases and knowledge sources.
+The system is built with a frontend (Next.js) for the user interface and a backend (Node.js/Express + DB) that powers the AI agents and manages data.
